@@ -1,7 +1,6 @@
 #!/usr/bin/env Rscript
 # Portfolio-safe script (paths/identifiers generalized; inputs not included).
 
-# ------- Working directory handling -------
 # When run via `Rscript`, set working directory to the script's directory.
 try({
   args_all <- commandArgs(trailingOnly = FALSE)
@@ -161,7 +160,7 @@ metrics <- mob_summary %>%
   full_join(mash_cluster_summary, by = "sample") %>%
   arrange(sample)
 
-# Integrate metadata (match sample code PROJECT-01 to sample like SAMPLE-XX_SYY via prefix)
+# Integrate metadata (match sample code SAMPLE-XX to sample like SAMPLE-XX_SYY via prefix)
 metrics <- metrics %>% mutate(sample_code = str_extract(sample, "PROJECT-\\d{2}"))
 
 if ("sample_code" %in% names(md)) {

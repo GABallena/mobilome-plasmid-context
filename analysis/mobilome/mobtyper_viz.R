@@ -1,18 +1,4 @@
 #!/usr/bin/env Rscript
-# Portfolio-safe script (paths/identifiers generalized; inputs not included).
-
-# ------- Working directory handling -------
-# When run via `Rscript`, set working directory to the script's directory.
-try({
-  args_all <- commandArgs(trailingOnly = FALSE)
-  file_arg <- grep("^--file=", args_all, value = TRUE)
-  if(length(file_arg) == 1){
-    script_path <- normalizePath(sub("^--file=", "", file_arg))
-    setwd(dirname(script_path))
-  }
-}, silent = TRUE)
-cat("Working directory:", getwd(), "\n")
-
 
 # mobtyper_viz.R — Visualization toolkit for MOB-suite MOB-typer outputs
 #
@@ -60,13 +46,6 @@ suppressPackageStartupMessages({
   library(rlang)
   library(forcats)
   library(patchwork)
-
-# ---- Config ----
-MOBTYPER_TSV <- Sys.getenv("MOBTYPER_TSV", "results/tables/mobtyper_summary.tsv")
-SAMPLE_META_TSV <- Sys.getenv("SAMPLE_META_TSV", "metadata/sample_metadata.tsv")
-OUT_DIR <- Sys.getenv("OUT_DIR", "results/figures/mobilome")
-dir.create(OUT_DIR, recursive = TRUE, showWarnings = FALSE)
-
 })
 
 # Quiet R CMD check for NSE columns used in dplyr/ggplot2
@@ -413,7 +392,7 @@ rep_presence <- rep_counts %>%
   group_by(sample, name) %>% summarise(present = as.integer(sum(n) > 0), .groups = "drop")
 rep_richness <- rep_presence %>% group_by(sample) %>% summarise(richness = sum(present), .groups = "drop")
 
-# Attach sample_code (e.g., PROJECT-01 from SAMPLE-XX_SYY)
+# Attach sample_code (e.g., SAMPLE-01 from SAMPLE-01_S1)
 rep_richness <- rep_richness %>% mutate(sample_code = sub("_S.*$", "", sample))
 
 # Try to read metadata to get site and treatment
